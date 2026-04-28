@@ -75,7 +75,17 @@ INSERT INTO campeonatopais
 				AND C.campeonato = 'FIFA World Cup 2026'
 	ON CONFLICT(idcampeonato, idpais) DO NOTHING ;
 
---3. Actualización de Grupos
+--4. Actualización de Grupos
 INSERT INTO grupo
 	(idcampeonato, grupo)
+	SELECT C.id, G.grupo
+		FROM campeonato C
+			JOIN (
+				VALUES('A'), ('B'), ('C'), ('D'),
+        		('E'), ('F'), ('G'), ('H'),
+				('I'), ('J'), ('K'), ('L')
+			) G(grupo)
+			ON C.campeonato = 'FIFA World Cup 2026'
+	ON CONFLICT(idcampeonato, grupo) DO NOTHING;
+	
 	
