@@ -86,7 +86,35 @@ SELECT P.pais, C.ciudad, E.estadio, E.capacidad
 		JOIN ciudad C ON P.id = C.idpais
 		LEFT JOIN estadio E ON E.idciudad = C.id
 	WHERE P.pais IN ('México', 'Estados Unidos', 'Canadá')
-	
+
+--Listar las fases
+SELECT *
+	FROM fase;
+
+--Listar los encuentros
+SELECT C.Campeonato, E.IdCampeonato,
+    G.grupo, E.Fecha, 
+    E.IdPais1, P1.Pais Pais1, E.Goles1, 
+    E.IdPais2, P2.Pais Pais2, E.Goles2,  
+    E.IdFase, 
+    F.Fase, 
+    ES.Estadio || ' (' || CD.Ciudad || ')' AS Estadio, 
+    E.IdEStadio
+	FROM Encuentro E	
+		JOIN Pais P1 ON E.IdPais1 = P1.Id
+		JOIN Pais P2 ON E.IdPais2 = P2.Id
+		JOIN GrupoPais GP 
+		    ON GP.IdPais = E.IdPais1
+		JOIN Grupo G 
+		    ON G.Id = GP.IdGrupo 
+		   AND G.IdCampeonato = E.IdCampeonato   -- ✅ evita duplicados
+		JOIN Campeonato C ON E.IdCampeonato = C.Id
+		JOIN Estadio ES ON E.IdEstadio = ES.Id
+		JOIN Ciudad CD ON ES.IdCiudad = CD.Id
+		JOIN Fase F ON E.IdFase = F.Id
+	WHERE C.Campeonato = 'FIFA World Cup 2026'
+	  AND E.IdFase = 1
+	ORDER BY G.Grupo, E.Fecha;
 
 --Eliminar todos los paises de los grupos del campeonato con ID=12 (Campoenato Mundial 2026)
 DELETE FROM grupopais GP
@@ -119,6 +147,8 @@ DELETE FROM ciudad C
 	USING pais P
 	WHERE C.idpais = P.id
 	  AND P.pais IN ('México', 'Estados Unidos', 'Canadá')
+
+
 
 
 	
