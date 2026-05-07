@@ -76,6 +76,14 @@ SELECT campeonato, año, grupo, G.id, STRING_AGG(pais, ', ') paises
 	WHERE C.campeonato = 'FIFA World Cup 2026'
 	GROUP BY campeonato, año, grupo, G.id
 
+SELECT campeonato, año, grupo, G.id, STRING_AGG(pais, ', ') paises
+	FROM campeonato C
+		LEFT JOIN grupo G ON G.idcampeonato = C.id
+		LEFT JOIN grupopais GP ON GP.idgrupo = G.id
+		LEFT JOIN pais P ON P.id = GP.idpais
+	WHERE C.campeonato = 'FIFA World Cup 2018'
+	GROUP BY campeonato, año, grupo, G.id
+
 --Listar los grupos llamados 'A'
 SELECT * FROM grupo
 	WHERE grupo='A'
@@ -115,6 +123,31 @@ SELECT C.Campeonato, E.IdCampeonato,
 	WHERE C.Campeonato = 'FIFA World Cup 2026'
 	  AND E.IdFase = 1
 	ORDER BY G.Grupo, E.Fecha;
+
+SELECT E.Fecha, 
+    P1.Pais Pais1, E.Goles1, 
+    P2.Pais Pais2, E.Goles2,  
+    ES.Estadio || ' (' || CD.Ciudad || ')' AS Estadio
+	FROM Encuentro E	
+		JOIN Pais P1 ON E.IdPais1 = P1.Id
+		JOIN Pais P2 ON E.IdPais2 = P2.Id
+		JOIN GrupoPais GP 
+		    ON GP.IdPais = E.IdPais1
+		JOIN Grupo G 
+		    ON G.Id = GP.IdGrupo 
+		   AND G.IdCampeonato = E.IdCampeonato   -- ✅ evita duplicados
+		JOIN Campeonato C ON E.IdCampeonato = C.Id
+		JOIN Estadio ES ON E.IdEstadio = ES.Id
+		JOIN Ciudad CD ON ES.IdCiudad = CD.Id
+		JOIN Fase F ON E.IdFase = F.Id
+	WHERE C.Campeonato = 'FIFA World Cup 2018'
+	  AND E.IdFase = 1
+	  AND G.grupo = 'H'
+	ORDER BY G.Grupo, E.Fecha;
+
+--Obtener la tabla de posiciones de un grupo
+SELECT *
+	FROM fObtenerTablaPosiciones(38);
 
 --Eliminar todos los paises de los grupos del campeonato con ID=12 (Campoenato Mundial 2026)
 DELETE FROM grupopais GP
