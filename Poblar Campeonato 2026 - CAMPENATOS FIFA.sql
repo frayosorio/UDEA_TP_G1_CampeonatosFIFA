@@ -26,6 +26,11 @@ SELECT setval(
     (SELECT MAX(id) FROM estadio)
 	);
 
+SELECT setval(
+    pg_get_serial_sequence('encuentro', 'id'),
+    (SELECT MAX(id) FROM encuentro)
+	);
+
 
 --1. Actualización de todos los paises
 
